@@ -21,7 +21,7 @@ def get_data():
 df = get_data()
 
 # --- 3. Search Interface ---
-st.title("⚡ Ultra-Fast Image Search")
+st.title("⚡ Fast Image Search")
 search_term = st.text_input("🔍 Type your keyword here:", "").strip()
 
 # --- 4. Main Logic ---
@@ -66,4 +66,5 @@ if search_term:
     else:
         st.warning(f"No results found for '{search_term}'.")
 else:
+
     st.info("Please enter a keyword to start searching for images.")
