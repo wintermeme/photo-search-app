@@ -1,24 +1,26 @@
 import streamlit as st
 import pandas as pd
+import os
 
 # --- 1. Page Configuration ---
 st.set_page_config(page_title="Image Gallery Search", layout="wide")
 
 # --- 2. Data Loading (Cached for Speed) ---
 @st.cache_data
-def get_data():
+def get_data(file_mtime):  # <--- 第二处：在这里增加一个参数 file_mtime
     try:
-        # Load specific columns to save memory and improve speed
         df = pd.read_excel("data.xlsx", engine="openpyxl", usecols=['name', 'url'])
-        # Ensure all data are treated as strings
         df['name'] = df['name'].astype(str)
         df['url'] = df['url'].astype(str)
         return df
     except Exception as e:
-        st.error("Failed to load data. Please ensure 'data.xlsx' is in the root directory.")
+        st.error("Failed to load data.")
         return pd.DataFrame()
 
-df = get_data()
+# 【改动3：在获取数据前，先读取文件的修改时间】
+target_file = "data.xlsx"
+mtime = os.path.getmtime(target_file) if os.path.exists(target_file) else 0
+df = get_data(mtime) # 传入时间戳，文件变了时间戳就变，缓存就会自动刷新
 
 # --- 3. Search Interface ---
 st.title("⚡ Fast Image Search")
@@ -68,3 +70,4 @@ if search_term:
 else:
 
     st.info("Please enter a keyword to start searching for images.")
+
